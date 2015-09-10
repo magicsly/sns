@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sns.dao.snsUserMapper" >
+  <resultMap id="BaseResultMap" type="com.sns.model.snsUser" >
+    <id column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="utype" property="utype" jdbcType="TINYINT" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+    <result column="pwd" property="pwd" jdbcType="CHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="info" property="info" jdbcType="VARCHAR" />
+    <result column="img" property="img" jdbcType="CHAR" />
+    <result column="jointime" property="jointime" jdbcType="TIMESTAMP" />
+    <result column="loginip" property="loginip" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    uid, utype, uname, pwd, mobile, email, info, img, jointime, loginip
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sns_user
+    where uid = #{uid,jdbcType=INTEGER}
+  </select>
+  <select id="userlogin" resultType="int" parameterType="com.sns.model.snsUser">
+        SELECT COUNT(0) FROM sns_user where mobile=#{mobile,jdbcType=VARCHAR} AND pwd=#{pwd,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByMobile" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from sns_user
+        where mobile=#{mobile,jdbcType=VARCHAR}
+    </select>
+    <select id="isuser" resultType="int" parameterType="java.lang.String">
+        SELECT COUNT(0) FROM sns_user where mobile=#{mobile,jdbcType=VARCHAR}
+    </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sns_user
+    where uid = #{uid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.sns.model.snsUser" >
+    insert into sns_user (uid, utype, uname, 
+      pwd, mobile, email, info, 
+      img, jointime, loginip)
+    values (#{uid,jdbcType=INTEGER}, #{utype,jdbcType=TINYINT}, #{uname,jdbcType=VARCHAR}, 
+      #{pwd,jdbcType=CHAR}, #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{info,jdbcType=VARCHAR}, 
+      #{img,jdbcType=CHAR}, #{jointime,jdbcType=TIMESTAMP}, #{loginip,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sns.model.snsUser" >
+    insert into sns_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="utype != null" >
+        utype,
+      </if>
+      <if test="uname != null" >
+        uname,
+      </if>
+      <if test="pwd != null" >
+        pwd,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="info != null" >
+        info,
+      </if>
+      <if test="img != null" >
+        img,
+      </if>
+      <if test="jointime != null" >
+        jointime,
+      </if>
+      <if test="loginip != null" >
+        loginip,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="utype != null" >
+        #{utype,jdbcType=TINYINT},
+      </if>
+      <if test="uname != null" >
+        #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null" >
+        #{pwd,jdbcType=CHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="info != null" >
+        #{info,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null" >
+        #{img,jdbcType=CHAR},
+      </if>
+      <if test="jointime != null" >
+        #{jointime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loginip != null" >
+        #{loginip,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sns.model.snsUser" >
+    update sns_user
+    <set >
+      <if test="utype != null" >
+        utype = #{utype,jdbcType=TINYINT},
+      </if>
+      <if test="uname != null" >
+        uname = #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null" >
+        pwd = #{pwd,jdbcType=CHAR},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="info != null" >
+        info = #{info,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null" >
+        img = #{img,jdbcType=CHAR},
+      </if>
+      <if test="jointime != null" >
+        jointime = #{jointime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loginip != null" >
+        loginip = #{loginip,jdbcType=CHAR},
+      </if>
+    </set>
+    where uid = #{uid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sns.model.snsUser" >
+    update sns_user
+    set utype = #{utype,jdbcType=TINYINT},
+      uname = #{uname,jdbcType=VARCHAR},
+      pwd = #{pwd,jdbcType=CHAR},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      info = #{info,jdbcType=VARCHAR},
+      img = #{img,jdbcType=CHAR},
+      jointime = #{jointime,jdbcType=TIMESTAMP},
+      loginip = #{loginip,jdbcType=CHAR}
+    where uid = #{uid,jdbcType=INTEGER}
+  </update>
+</mapper>
