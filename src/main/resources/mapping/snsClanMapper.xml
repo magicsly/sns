@@ -3,6 +3,7 @@
 <mapper namespace="com.sns.dao.snsClanMapper" >
   <resultMap id="BaseResultMap" type="com.sns.model.snsClan" >
     <id column="cid" property="cid" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
     <result column="cname" property="cname" jdbcType="VARCHAR" />
     <result column="info" property="info" jdbcType="VARCHAR" />
     <result column="img" property="img" jdbcType="CHAR" />
@@ -12,7 +13,7 @@
     <result column="state" property="state" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Base_Column_List" >
-    cid, cname, info, img, uid, type, creattime, state
+    cid, code, cname, info, img, uid, type, creattime, state
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -25,18 +26,21 @@
     where cid = #{cid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.sns.model.snsClan" >
-    insert into sns_clan (cid, cname, info, 
-      img, uid, type, creattime, 
-      state)
-    values (#{cid,jdbcType=INTEGER}, #{cname,jdbcType=VARCHAR}, #{info,jdbcType=VARCHAR}, 
-      #{img,jdbcType=CHAR}, #{uid,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, #{creattime,jdbcType=TIMESTAMP}, 
-      #{state,jdbcType=TINYINT})
+    insert into sns_clan (cid, code, cname, 
+      info, img, uid, type, 
+      creattime, state)
+    values (#{cid,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{cname,jdbcType=VARCHAR}, 
+      #{info,jdbcType=VARCHAR}, #{img,jdbcType=CHAR}, #{uid,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
+      #{creattime,jdbcType=TIMESTAMP}, #{state,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.sns.model.snsClan" >
     insert into sns_clan
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="cid != null" >
         cid,
+      </if>
+      <if test="code != null" >
+        code,
       </if>
       <if test="cname != null" >
         cname,
@@ -64,6 +68,9 @@
       <if test="cid != null" >
         #{cid,jdbcType=INTEGER},
       </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
       <if test="cname != null" >
         #{cname,jdbcType=VARCHAR},
       </if>
@@ -90,6 +97,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.sns.model.snsClan" >
     update sns_clan
     <set >
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
       <if test="cname != null" >
         cname = #{cname,jdbcType=VARCHAR},
       </if>
@@ -116,7 +126,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.sns.model.snsClan" >
     update sns_clan
-    set cname = #{cname,jdbcType=VARCHAR},
+    set code = #{code,jdbcType=VARCHAR},
+      cname = #{cname,jdbcType=VARCHAR},
       info = #{info,jdbcType=VARCHAR},
       img = #{img,jdbcType=CHAR},
       uid = #{uid,jdbcType=INTEGER},

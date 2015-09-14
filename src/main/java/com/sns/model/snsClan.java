@@ -5,6 +5,8 @@ import java.util.Date;
 public class snsClan {
     private Integer cid;
 
+    private String code;
+
     private String cname;
 
     private String info;
@@ -25,6 +27,14 @@ public class snsClan {
 
     public void setCid(Integer cid) {
         this.cid = cid;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code == null ? null : code.trim();
     }
 
     public String getCname() {
