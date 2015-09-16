@@ -28,7 +28,7 @@
             <value>com.mysql.jdbc.Driver</value>
         </property>
         <property name="url">
-            <value>jdbc:mysql://localhost:3306/sns</value>
+            <value>jdbc:mysql://localhost:3306/sns?useUnicode=true&amp;characterEncoding=UTF-8</value>
         </property>
         <property name="username">
             <value>root</value>
@@ -95,6 +95,7 @@
         <!-- 线程池维护线程所允许的空闲时间，默认为60s -->
         <property name="keepAliveSeconds" value="60" />
     </bean>
+
     <task:annotation-driven/>
 
 

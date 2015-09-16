@@ -15,6 +15,12 @@ public class snsClanUser {
 
     private Date creattime;
 
+    private Date updatetime;
+
+    private snsClan Clan;
+
+    private snsUser user;
+
     public Integer getId() {
         return id;
     }
@@ -61,5 +67,29 @@ public class snsClanUser {
 
     public void setCreattime(Date creattime) {
         this.creattime = creattime;
+    }
+
+    public Date getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(Date updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    public snsClan getClan(){
+        return Clan;
+    }
+
+    public void setClan(snsClan Clan){
+        this.Clan =Clan;
+    }
+
+    public snsUser getUser(){
+        return user;
+    }
+
+    public void setUser(snsUser user){
+        this.user=user;
     }
 }

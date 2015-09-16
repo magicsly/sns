@@ -8,9 +8,30 @@
     <result column="state" property="state" jdbcType="TINYINT" />
     <result column="level" property="level" jdbcType="TINYINT" />
     <result column="creattime" property="creattime" jdbcType="TIMESTAMP" />
+    <result column="updatetime" property="updatetime" jdbcType="TIMESTAMP" />
   </resultMap>
+    <resultMap type="com.sns.model.snsClanUser" id="clanList">
+        <result column="cid" property="cid" jdbcType="INTEGER" />
+        <result column="level" property="level" jdbcType="TINYINT" />
+        <collection ofType="com.sns.model.snsClan" property="Clan">
+            <result property="cname" column="cname"/>
+            <result property="info" column="info"/>
+            <result property="img" column="img"/>
+        </collection>
+
+    </resultMap>
+
+    <resultMap type="com.sns.model.snsClanUser" id="userList">
+        <result column="level" property="level" jdbcType="TINYINT" />
+        <collection ofType="com.sns.model.snsUser" property="user">
+            <result property="uname" column="uname"/>
+            <result property="info" column="info"/>
+            <result property="img" column="img"/>
+        </collection>
+    </resultMap>
+
   <sql id="Base_Column_List" >
-    id, cid, uid, state, level, creattime
+    id, cid, uid, state, level, creattime, updatetime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -18,17 +39,37 @@
     from sns_clan_user
     where id = #{id,jdbcType=INTEGER}
   </select>
+    <select id="userClan_list" resultMap="clanList" parameterType="java.lang.Integer" >
+        select
+        a.cid,level,cname,info,img
+        from sns_clan_user as a INNER JOIN sns_clan as b on a.cid = b.cid
+        where a.uid = #{uid,jdbcType=INTEGER} and a.state = 0
+    </select>
+    <select id="clanUser_list" resultMap="userList" parameterType="java.lang.Integer" >
+        select
+        level,uname,info,img
+        from sns_clan_user as a INNER JOIN sns_user as b on a.uid = b.uid
+        where a.cid = #{cid,jdbcType=INTEGER} and a.state = 0
+    </select>
+
+    <select id="isClanUser" resultType="java.lang.Integer" parameterType="com.sns.model.snsClanUser" >
+        select
+        count(0)
+        from sns_clan_user
+        where cid = #{cid,jdbcType=INTEGER} AND uid = #{uid,jdbcType=INTEGER} AND state = 0
+    </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sns_clan_user
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.sns.model.snsClanUser" >
     insert into sns_clan_user (id, cid, uid, 
-      state, level, creattime
-      )
+      state, level, creattime, 
+      updatetime)
     values (#{id,jdbcType=INTEGER}, #{cid,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, 
-      #{state,jdbcType=TINYINT}, #{level,jdbcType=TINYINT}, #{creattime,jdbcType=TIMESTAMP}
-      )
+      #{state,jdbcType=TINYINT}, #{level,jdbcType=TINYINT}, #{creattime,jdbcType=TIMESTAMP}, 
+      #{updatetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.sns.model.snsClanUser" >
     insert into sns_clan_user
@@ -51,6 +92,9 @@
       <if test="creattime != null" >
         creattime,
       </if>
+      <if test="updatetime != null" >
+        updatetime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -70,6 +114,9 @@
       </if>
       <if test="creattime != null" >
         #{creattime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -91,6 +138,9 @@
       <if test="creattime != null" >
         creattime = #{creattime,jdbcType=TIMESTAMP},
       </if>
+      <if test="updatetime != null" >
+        updatetime = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -100,7 +150,8 @@
       uid = #{uid,jdbcType=INTEGER},
       state = #{state,jdbcType=TINYINT},
       level = #{level,jdbcType=TINYINT},
-      creattime = #{creattime,jdbcType=TIMESTAMP}
+      creattime = #{creattime,jdbcType=TIMESTAMP},
+      updatetime = #{updatetime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

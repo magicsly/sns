@@ -21,6 +21,12 @@
     from sns_clan
     where cid = #{cid,jdbcType=INTEGER}
   </select>
+    <select id="isClan" resultType="java.lang.Integer" parameterType="com.sns.model.snsClan" >
+        select
+        count(0)
+        from sns_clan
+        where cid = #{cid,jdbcType=INTEGER} AND uid = #{uid,jdbcType=INTEGER}
+    </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sns_clan
     where cid = #{cid,jdbcType=INTEGER}
@@ -33,7 +39,7 @@
       #{info,jdbcType=VARCHAR}, #{img,jdbcType=CHAR}, #{uid,jdbcType=INTEGER}, #{type,jdbcType=TINYINT}, 
       #{creattime,jdbcType=TIMESTAMP}, #{state,jdbcType=TINYINT})
   </insert>
-  <insert id="insertSelective" parameterType="com.sns.model.snsClan" >
+  <insert id="insertSelective" parameterType="com.sns.model.snsClan" keyProperty="cid" useGeneratedKeys="true">
     insert into sns_clan
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="cid != null" >
@@ -100,7 +106,7 @@
       <if test="code != null" >
         code = #{code,jdbcType=VARCHAR},
       </if>
-      <if test="cname != null" >
+      <if test="cname != null">
         cname = #{cname,jdbcType=VARCHAR},
       </if>
       <if test="info != null" >

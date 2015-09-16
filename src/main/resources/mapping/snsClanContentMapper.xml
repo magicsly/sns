@@ -8,6 +8,21 @@
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="creattime" property="creattime" jdbcType="TIMESTAMP" />
   </resultMap>
+
+    <resultMap type="com.sns.model.snsClanContent" id="contentList">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="cid" property="cid" jdbcType="INTEGER" />
+        <result column="uid" property="uid" jdbcType="INTEGER" />
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="creattime" property="creattime" jdbcType="TIMESTAMP" />
+        <collection ofType="com.sns.model.snsClan" property="Clan">
+            <result property="cname" column="cname"/>
+            <result property="info" column="info"/>
+            <result property="img" column="img"/>
+        </collection>
+
+    </resultMap>
+
   <sql id="Base_Column_List" >
     id, cid, uid, content, creattime
   </sql>
@@ -17,6 +32,19 @@
     from sns_clan_content
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+    <select id="selectByCid" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from sns_clan_content
+        where cid = #{cid,jdbcType=INTEGER} ORDER BY creattime DESC
+    </select>
+    <select id="selectByUid" resultMap="contentList" parameterType="java.lang.Integer" >
+        select
+        id,a.cid,a.uid,content,a.creattime,cname,info,img
+        from sns_clan_content as a LEFT JOIN sns_clan as b on a.cid = b.cid
+        where a.uid = #{uid,jdbcType=INTEGER} ORDER BY a.creattime DESC
+    </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sns_clan_content
     where id = #{id,jdbcType=INTEGER}

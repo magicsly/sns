@@ -21,6 +21,13 @@ import javax.servlet.http.HttpServletRequest;
 public class userlogin {
     @Pointcut("execution(* com.sns.service.userService.userInfo(..)) ||" +
             "execution(* com.sns.service.userService.addUserinfo(..)) ||" +
+            "execution(* com.sns.service.clanService.addClan(..)) ||" +
+            "execution(* com.sns.service.clanService.editClan(..)) ||" +
+            "execution(* com.sns.service.clanService.clanAddUser(..)) ||" +
+            "execution(* com.sns.service.clanService.clanContentAdd(..)) ||" +
+            "execution(* com.sns.service.clanService.clanUserUpadte(..)) ||" +
+            "execution(* com.sns.service.clanService.ContentListByClan(..)) ||" +
+            "execution(* com.sns.service.clanService.ContentListByUser(..)) ||" +
             "execution(* com.sns.service.userService.editUserinfo(..))")
     public void isLogin() {}
 

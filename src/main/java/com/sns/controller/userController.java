@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 /**
@@ -67,7 +68,9 @@ public class userController {
                             @RequestParam(value="info",defaultValue = "",required=false) String info,
                             @RequestParam(value="img",defaultValue = "",required=false) String img
 
-    ){
+    ) throws UnsupportedEncodingException {
+        uname= new String(uname.getBytes("ISO-8859-1"),"utf-8");
+        info= new String(info.getBytes("ISO-8859-1"),"utf-8");
         snsUser snsUser = new snsUser();
         snsUser.setUid(uid);
         snsUser.setUname(uname);

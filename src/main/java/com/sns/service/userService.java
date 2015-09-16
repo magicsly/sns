@@ -90,6 +90,15 @@ public class userService {
     }
 
     public Map editUserinfo(snsUser user){
+        if(user.getUname().equals("")){
+            user.setUname(null);
+        }
+        if(user.getInfo().equals("")){
+            user.setInfo(null);
+        }
+        if(user.getImg().equals("")){
+            user.setImg(null);
+        }
         snsUserMapper.updateByPrimaryKeySelective(user);
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("code",0);

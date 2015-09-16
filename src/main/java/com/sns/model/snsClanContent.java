@@ -13,6 +13,8 @@ public class snsClanContent {
 
     private Date creattime;
 
+    private snsClan Clan;
+
     public Integer getId() {
         return id;
     }
@@ -51,5 +53,13 @@ public class snsClanContent {
 
     public void setCreattime(Date creattime) {
         this.creattime = creattime;
+    }
+
+    public snsClan getClan(){
+        return Clan;
+    }
+
+    public void setClan(snsClan Clan){
+        this.Clan =Clan;
     }
 }

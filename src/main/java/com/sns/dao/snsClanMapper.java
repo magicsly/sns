@@ -16,4 +16,6 @@ public interface snsClanMapper {
     int updateByPrimaryKeySelective(snsClan record);
 
     int updateByPrimaryKey(snsClan record);
+
+    int isClan(snsClan record);
 }
