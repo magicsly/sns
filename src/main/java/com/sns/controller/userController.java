@@ -18,18 +18,9 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/")
-public class userController {
+public class userController extends baseController{
     @Autowired
     com.sns.service.userService userService;
-
-    @ExceptionHandler
-    public @ResponseBody MyError exp(HttpServletRequest request, Exception ex) {
-        if(ex instanceof MyException){
-            MyException myException = (MyException) ex;
-            return myException.getError();
-        }
-        return new MyError(-9,ex.getMessage());
-    }
 
     @RequestMapping(value = "/regrist")
     @ResponseBody
@@ -77,5 +68,11 @@ public class userController {
         snsUser.setInfo(info);
         snsUser.setImg(img);
         return userService.editUserinfo(snsUser);
+    }
+
+    @RequestMapping(value = "/usersearch")
+    @ResponseBody
+    public Map userSearch(@RequestParam(value="mobile",defaultValue = "",required=false) String mobile) {
+        return userService.searchUser(mobile);
     }
 }

@@ -17,6 +17,10 @@ public class snsContentAnswer {
 
     private Date creattime;
 
+    private snsUser fuser;
+
+    private snsUser auser;
+
     public Integer getId() {
         return id;
     }
@@ -71,5 +75,21 @@ public class snsContentAnswer {
 
     public void setCreattime(Date creattime) {
         this.creattime = creattime;
+    }
+
+
+    public void setAuser(snsUser auser) {
+        this.auser = auser;
+    }
+
+    public snsUser getAuser(){
+        return auser;
+    }
+    public void setFuser(snsUser fuser) {
+        this.fuser = fuser;
+    }
+
+    public snsUser getFuser(){
+        return fuser;
     }
 }

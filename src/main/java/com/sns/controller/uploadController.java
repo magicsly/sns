@@ -31,26 +31,32 @@ public class uploadController {
     @RequestMapping("/upload")
     @ResponseBody
     public Map upload(
-            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam(value = "file", required = true) MultipartFile file,
             HttpServletRequest request
     ) {
-        String path = request.getSession().getServletContext().getRealPath("image");
-        Date date = new Date();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmssSSS");
-        String fileName = sdf.format(date)+".jpg";
-        System.out.println(path);
-        File targetFile = new File(path, fileName);
-        if(!targetFile.exists()){
-            targetFile.mkdirs();
-        }
-        try {
-            file.transferTo(targetFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("code",0);
-        map.put("filenmae","/sns/image/"+fileName);
-        return map;
+            System.out.println("进入上传文件");
+            String fname = file.getOriginalFilename();
+            System.out.println("文件名"+fname);
+            String path = request.getSession().getServletContext().getRealPath("image");
+            Date date = new Date();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmssSSS");
+            String fileName = sdf.format(date)+".jpg";
+            File targetFile = new File(path, fileName);
+            if(!targetFile.exists()){
+                targetFile.mkdirs();
+            }
+             try {
+                file.transferTo(targetFile);
+            } catch (Exception e) {
+                 e.printStackTrace();
+            }
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("code",0);
+            map.put("filenmae","/sns/image/"+fileName);
+            map.put("fname",fname);
+            return map;
+
     }
 }

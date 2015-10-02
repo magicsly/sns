@@ -3,6 +3,8 @@ package com.sns.dao;
 import com.sns.model.snsClan;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+
 @Repository
 public interface snsClanMapper {
     int deleteByPrimaryKey(Integer cid);
@@ -18,4 +20,6 @@ public interface snsClanMapper {
     int updateByPrimaryKey(snsClan record);
 
     int isClan(snsClan record);
+
+    ArrayList<snsClan> clanSearch(String code);
 }

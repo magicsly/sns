@@ -1,6 +1,7 @@
 package com.sns.service;
 
 import com.sns.dao.snsUserMapper;
+import com.sns.dao.snsClanUserMapper;
 import com.sns.model.snsUser;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class userService {
     public static final String key = "123456789";
     @Autowired
     snsUserMapper snsUserMapper;
+
+    @Autowired
+    snsClanUserMapper snsClanUserMapper;
 
     public Map regist(snsUser user,HttpServletResponse response){
         Map<String, Object> map = new HashMap<String, Object>();
@@ -80,12 +84,22 @@ public class userService {
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("code",0);
         map.put("info",snsUser);
+        map.put("list",snsClanUserMapper.userClan_list(uid));
         return map;
     }
 
     public Map addUserinfo(snsUser user){
         Map<String,Object> map = new HashMap<String, Object>();
         map.put("code",0);
+        return map;
+    }
+
+    public Map searchUser(String mobile){
+        Map<String,Object> map = new HashMap<String, Object>();
+        snsUser snsUser = snsUserMapper.selectByMobile(mobile);
+        snsUser.setPwd(null);
+        map.put("code",0);
+        map.put("info",snsUser);
         return map;
     }
 

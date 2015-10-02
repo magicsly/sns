@@ -24,4 +24,6 @@ public interface snsClanUserMapper {
     ArrayList<snsClanUser> clanUser_list(Integer cid);
 
     int isClanUser(snsClanUser record);
+
+    int deleteUser(snsClanUser record);
 }

@@ -5,6 +5,7 @@ import com.sns.model.snsClanContent;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 @Repository
 public interface snsClanContentMapper {
@@ -20,7 +21,9 @@ public interface snsClanContentMapper {
 
     int updateByPrimaryKey(snsClanContent record);
 
-    ArrayList<snsClanContent> selectByCid(Integer cid , PageBounds pageBounds);
+    ArrayList<snsClanContent> selectByCid(Map map , PageBounds pageBounds);
 
     ArrayList<snsClanContent> selectByUid(Integer uid , PageBounds pageBounds);
+
+    ArrayList<snsClanContent> selectByUser(Integer uid , PageBounds pageBounds);
 }

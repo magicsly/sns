@@ -28,6 +28,9 @@ public class userlogin {
             "execution(* com.sns.service.clanService.clanUserUpadte(..)) ||" +
             "execution(* com.sns.service.clanService.ContentListByClan(..)) ||" +
             "execution(* com.sns.service.clanService.ContentListByUser(..)) ||" +
+            "execution(* com.sns.service.clanService.myContentList(..)) ||" +
+            "execution(* com.sns.service.clanService.addAnswer(..)) ||" +
+            "execution(* com.sns.service.clanService.answerListById(..)) ||" +
             "execution(* com.sns.service.userService.editUserinfo(..))")
     public void isLogin() {}
 

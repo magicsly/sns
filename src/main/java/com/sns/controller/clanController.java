@@ -1,16 +1,12 @@
 package com.sns.controller;
 
-import com.sns.model.snsClan;
-import com.sns.model.snsClanUser;
-import com.sns.model.snsClanContent;
-import com.sns.model.snsContentAnswer;
+import com.sns.exception.MyException;
+import com.sns.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
@@ -20,7 +16,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/")
-public class clanController {
+public class clanController extends baseController{
     @Autowired
     com.sns.service.clanService clanService;
 
@@ -62,17 +58,30 @@ public class clanController {
         return clanService.editClan(snsClan);
     }
 
+    @RequestMapping(value = "/delclan")
+    @ResponseBody
+    public Map delClan(@RequestParam(value="cid",defaultValue = "",required=false) Integer cid,
+                        @CookieValue(value="uid",defaultValue = "",required=false) Integer uid
+    ){
+        snsClan snsClan = new snsClan();
+        snsClan.setCid(cid);
+        snsClan.setUid(uid);
+        return clanService.delClan(snsClan);
+    }
+
+
     @RequestMapping(value = "/claninfo")
     @ResponseBody
-    public Map clanInfo(@RequestParam(value="cid",defaultValue = "",required=false) Integer cid
+    public Map clanInfo(@RequestParam(value="cid",defaultValue = "",required=false) Integer cid,
+                        @CookieValue(value="uid",defaultValue = "",required=false) Integer uid
     ){
-        return clanService.clanInfo(cid);
+        return clanService.clanInfo(cid,uid);
     }
 
     @RequestMapping(value = "/clanuseradd")
     @ResponseBody
     public Map clanUserAdd(@RequestParam(value="cid",defaultValue = "",required=false) Integer cid,
-                           @CookieValue(value="uid",defaultValue = "",required=false) Integer uid
+                           @RequestParam(value="uid",defaultValue = "",required=false) Integer uid
     ){
         snsClanUser clanUser = new snsClanUser();
         clanUser.setCid(cid);
@@ -83,8 +92,8 @@ public class clanController {
     }
 
     @RequestMapping(value = "/joinclan")
-     @ResponseBody
-     public Map joinclan(@RequestParam(value="id",defaultValue = "",required=false) Integer id){
+    @ResponseBody
+    public Map joinclan(@RequestParam(value="id",defaultValue = "",required=false) Integer id){
         snsClanUser clanUser = new snsClanUser();
         clanUser.setId(id);
         clanUser.setState((byte)0);
@@ -98,6 +107,28 @@ public class clanController {
         clanUser.setId(id);
         clanUser.setState((byte)2);
         return clanService.clanUserUpadte(clanUser);
+    }
+
+    @RequestMapping(value = "/exitclan")
+    @ResponseBody
+    public Map exitclan(@RequestParam(value="cid",defaultValue = "",required=false) Integer cid,
+                        @CookieValue(value="uid",defaultValue = "",required=false) Integer uid
+    ){
+        snsClanUser clanUser = new snsClanUser();
+        clanUser.setCid(cid);
+        clanUser.setUid(uid);
+        return clanService.userExit(clanUser);
+    }
+
+    @RequestMapping(value = "/clandeluser")
+    @ResponseBody
+    public Map clandeluser(@RequestParam(value="cid",defaultValue = "",required=false) Integer cid,
+                        @RequestParam(value="uid",defaultValue = "",required=false) Integer uid
+    ){
+        snsClanUser clanUser = new snsClanUser();
+        clanUser.setCid(cid);
+        clanUser.setUid(uid);
+        return clanService.userExit(clanUser);
     }
 
     @RequestMapping(value = "/userclan_list")
@@ -126,6 +157,7 @@ public class clanController {
         clanContent.setContent(content);
         return clanService.clanContentAdd(clanContent);
     }
+
     @RequestMapping(value = "/contentbycaln")
     @ResponseBody
     public Map contentListByClan(@RequestParam(value="cid",defaultValue = "",required=false) Integer cid,
@@ -143,5 +175,53 @@ public class clanController {
 
     ){
         return clanService.ContentListByUser(uid, page);
+    }
+
+    @RequestMapping(value = "/mycontent")
+    @ResponseBody
+    public Map myContentList(@CookieValue(value="uid",defaultValue = "",required=false) Integer uid,
+                                 @RequestParam(value="page",defaultValue = "1",required=false) Integer page
+
+    ){
+        return clanService.myContentList(uid, page);
+    }
+
+    @RequestMapping(value = "/addanswer")
+    @ResponseBody
+    public Map addAnswer(@CookieValue(value="uid",defaultValue = "",required=false) Integer uid,
+                         @RequestParam(value="id",defaultValue = "1",required=false) Integer id,
+                         @RequestParam(value="aid",defaultValue = "1",required=false) Integer aid,
+                         @RequestParam(value="auid",defaultValue = "1",required=false) Integer auid,
+                         @RequestParam(value="content",defaultValue = "1",required=false) String content
+    ) throws UnsupportedEncodingException {
+        content= new String(content.getBytes("ISO-8859-1"),"utf-8");
+        snsContentAnswer snsContentAnswer = new snsContentAnswer();
+        snsContentAnswer.setUid(uid);
+        snsContentAnswer.setCid(id);
+        snsContentAnswer.setContent(content);
+        snsContentAnswer.setAid(aid);
+        snsContentAnswer.setAuid(auid);
+        return clanService.addAnswer(snsContentAnswer);
+    }
+
+    @RequestMapping(value = "/answerlist")
+    @ResponseBody
+    public Map answerList(@RequestParam(value="id",defaultValue = "1",required=false) Integer id,
+                          @CookieValue(value="uid",defaultValue = "",required=false) Integer uid,
+                          @RequestParam(value="page",defaultValue = "1",required=false) Integer page){
+        return clanService.answerListById(id,uid,page);
+    }
+
+    @RequestMapping(value = "/isuserclan")
+    @ResponseBody
+    public Map isUserClan(@CookieValue(value="uid",defaultValue = "",required=false) Integer uid,
+                          @RequestParam(value="cid",defaultValue = "",required=false) Integer cid){
+        return clanService.isClanUser(uid, cid);
+    }
+
+    @RequestMapping(value = "/searchclan")
+    @ResponseBody
+    public Map searchClan(@RequestParam(value="code",defaultValue = "",required=false) String code){
+        return clanService.clanSearch(code);
     }
 }

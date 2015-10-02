@@ -21,6 +21,12 @@
     from sns_clan
     where cid = #{cid,jdbcType=INTEGER}
   </select>
+    <select id="clanSearch" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select
+        <include refid="Base_Column_List" />
+        from sns_clan
+        where code = #{code,jdbcType=VARCHAR}
+    </select>
     <select id="isClan" resultType="java.lang.Integer" parameterType="com.sns.model.snsClan" >
         select
         count(0)

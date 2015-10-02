@@ -10,6 +10,27 @@
     <result column="content" property="content" jdbcType="VARCHAR" />
     <result column="creattime" property="creattime" jdbcType="TIMESTAMP" />
   </resultMap>
+
+    <resultMap type="com.sns.model.snsContentAnswer" id="answerList">
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="cid" property="cid" jdbcType="INTEGER" />
+        <result column="uid" property="uid" jdbcType="INTEGER" />
+        <result column="aid" property="aid" jdbcType="INTEGER" />
+        <result column="auid" property="auid" jdbcType="INTEGER" />
+        <result column="content" property="content" jdbcType="VARCHAR" />
+        <result column="creattime" property="creattime" jdbcType="TIMESTAMP" />
+        <collection ofType="com.sns.model.snsUser" property="fuser">
+            <result property="uname" column="uname"/>
+            <result property="info" column="info"/>
+            <result property="img" column="img"/>
+        </collection>
+        <collection ofType="com.sns.model.snsUser" property="auser">
+            <result property="uname" column="uname"/>
+            <result property="info" column="info"/>
+            <result property="img" column="img"/>
+        </collection>
+    </resultMap>
+
   <sql id="Base_Column_List" >
     id, cid, uid, aid, auid, content, creattime
   </sql>
@@ -19,6 +40,16 @@
     from sns_content_answer
     where id = #{id,jdbcType=INTEGER}
   </select>
+    <select id="selectByCid" resultType="java.util.HashMap" parameterType="java.util.HashMap" >
+        <![CDATA[
+        select
+        a.id,a.cid as answerid,a.uid as fuid,fuser.uname as funame,a.auid as auid,auser.uname as auname,a.content,a.creattime
+        from sns_content_answer as a
+        LEFT JOIN sns_user as fuser on a.uid = fuser.uid
+        LEFT JOIN sns_user as auser on a.auid = auser.uid
+        WHERE a.cid = #{id,jdbcType=INTEGER} and (a.uid = #{uid,jdbcType=INTEGER} or a.auid = #{uid,jdbcType=INTEGER})
+        ]]>
+    </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from sns_content_answer
     where id = #{id,jdbcType=INTEGER}

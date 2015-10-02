@@ -24,6 +24,7 @@
     <resultMap type="com.sns.model.snsClanUser" id="userList">
         <result column="level" property="level" jdbcType="TINYINT" />
         <collection ofType="com.sns.model.snsUser" property="user">
+            <result property="uid" column="uid"/>
             <result property="uname" column="uname"/>
             <result property="info" column="info"/>
             <result property="img" column="img"/>
@@ -46,7 +47,7 @@
         where a.uid = #{uid,jdbcType=INTEGER} and a.state = 0
     </select>
     <select id="clanUser_list" resultMap="userList" parameterType="java.lang.Integer" >
-        select
+        select a.uid,
         level,uname,info,img
         from sns_clan_user as a INNER JOIN sns_user as b on a.uid = b.uid
         where a.cid = #{cid,jdbcType=INTEGER} and a.state = 0
@@ -59,10 +60,16 @@
         where cid = #{cid,jdbcType=INTEGER} AND uid = #{uid,jdbcType=INTEGER} AND state = 0
     </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteUser" parameterType="com.sns.model.snsClanUser" >
     delete from sns_clan_user
-    where id = #{id,jdbcType=INTEGER}
+    where cid = #{cid,jdbcType=INTEGER} AND uid = #{uid,jdbcType=INTEGER}
   </delete>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+        delete from sns_clan_user
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
   <insert id="insert" parameterType="com.sns.model.snsClanUser" >
     insert into sns_clan_user (id, cid, uid, 
       state, level, creattime, 

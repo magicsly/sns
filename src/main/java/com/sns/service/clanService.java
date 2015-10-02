@@ -7,6 +7,8 @@ import com.sns.dao.snsClanUserMapper;
 import com.sns.model.snsClanUser;
 import com.sns.dao.snsClanContentMapper;
 import com.sns.model.snsClanContent;
+import com.sns.dao.snsContentAnswerMapper;
+import com.sns.model.snsContentAnswer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.github.miemiedev.mybatis.paginator.domain.PageBounds;
@@ -31,7 +33,10 @@ public class clanService {
     @Autowired
     snsClanContentMapper snsClanContentMapper;
 
-    public static final Integer pageSize = 10;
+    @Autowired
+    snsContentAnswerMapper snsContentAnswerMapper;
+
+    public static final Integer pageSize = 20;
     public Map addClan(snsClan clan){
         //创建部落
         Map<String, Object> map = new HashMap<String, Object>();
@@ -78,11 +83,42 @@ public class clanService {
         return map;
     }
 
-    public Map clanInfo(Integer cid){
+    public Map delClan(snsClan clan){
+        Map<String, Object> map = new HashMap<String, Object>();
+        Integer isclan = snsClanMapper.isClan(clan);
+        if(isclan>0) {
+            snsClanUserMapper.deleteByPrimaryKey(clan.getCid());
+            map.put("code", 0);
+            map.put("message", "解散成功");
+        }else{
+            map.put("code", 1);
+            map.put("message", "不能解散非本人的部落");
+        }
+        return map;
+    }
+
+    public Map clanInfo(Integer cid,Integer uid){
         Map<String, Object> map = new HashMap<String, Object>();
         snsClan clan = new snsClan();
         clan = snsClanMapper.selectByPrimaryKey(cid);
         map.put("code",0);
+        snsClanUser clanUser = new snsClanUser();
+        clanUser.setCid(cid);
+        clanUser.setUid(uid);
+        Integer isclanUser = snsClanUserMapper.isClanUser(clanUser);
+        if(isclanUser>0) {
+            snsClan cu = new snsClan();
+            cu.setUid(uid);
+            cu.setCid(cid);
+            Integer isclan = snsClanMapper.isClan(cu);
+            if(isclan>0) {
+                map.put("isuser",0);
+            }else {
+                map.put("isuser",1);
+            }
+        }else{
+            map.put("isuser",2);
+        }
         map.put("info",clan);
         return map;
     }
@@ -99,6 +135,13 @@ public class clanService {
         Map<String, Object> map = new HashMap<String, Object>();
         clanUser.setUpdatetime(new Date());
         snsClanUserMapper.updateByPrimaryKeySelective(clanUser);
+        map.put("code",0);
+        return map;
+    }
+
+    public Map userExit(snsClanUser clanUser){
+        Map<String, Object> map = new HashMap<String, Object>();
+        snsClanUserMapper.deleteUser(clanUser);
         map.put("code",0);
         return map;
     }
@@ -136,6 +179,19 @@ public class clanService {
         return map;
     }
 
+    public Map ContentListByUser(Integer uid ,Integer page){
+        Map<String, Object> map = new HashMap<String, Object>();
+        PageBounds pageBounds = new PageBounds(page,pageSize);
+        ArrayList contentList = snsClanContentMapper.selectByUid(uid,pageBounds);
+        PageList pageList = (PageList)contentList;
+        map.put("code",0);
+        map.put("list",contentList);
+        map.put("count",pageList.getPaginator().getTotalCount());
+        map.put("pagesize",pageSize);
+        map.put("page",page);
+        return map;
+    }
+
     public Map ContentListByClan(Integer cid,Integer uid ,Integer page){
         Map<String, Object> map = new HashMap<String, Object>();
         snsClanUser clanUser = new snsClanUser();
@@ -144,8 +200,11 @@ public class clanService {
         Integer isclanUser = snsClanUserMapper.isClanUser(clanUser);
         if(isclanUser>0) {
             snsClan clan = snsClanMapper.selectByPrimaryKey(cid);
+            Map<String, Object> pushmap = new HashMap<String, Object>();
+            pushmap.put("cid",cid);
+            pushmap.put("uid",uid);
             PageBounds pageBounds = new PageBounds(page,pageSize);
-            ArrayList contentList = snsClanContentMapper.selectByCid(cid,pageBounds);
+            ArrayList contentList = snsClanContentMapper.selectByCid(pushmap,pageBounds);
             PageList pageList = (PageList)contentList;
             map.put("code",0);
             map.put("info",clan);
@@ -160,12 +219,67 @@ public class clanService {
         return map;
     }
 
-    public Map ContentListByUser(Integer uid,Integer page){
+    public Map myContentList(Integer uid,Integer page){
         Map<String, Object> map = new HashMap<String, Object>();
         PageBounds pageBounds = new PageBounds(page,pageSize);
-        ArrayList contentList = snsClanContentMapper.selectByUid(uid,pageBounds);
+        ArrayList contentList = snsClanContentMapper.selectByUser(uid,pageBounds);
+        PageList pageList = (PageList)contentList;
         map.put("code",0);
         map.put("list",contentList);
+        map.put("count",pageList.getPaginator().getTotalCount());
+        map.put("pagesize",pageSize);
+        map.put("page",page);
+        return map;
+    }
+
+    public Map addAnswer(snsContentAnswer contentAnswer){
+        Map<String, Object> map = new HashMap<String, Object>();
+        snsClanUser clanUser = new snsClanUser();
+        clanUser.setCid(contentAnswer.getCid());
+        clanUser.setUid(contentAnswer.getUid());
+        Integer isclanUser = snsClanUserMapper.isClanUser(clanUser);
+        if(isclanUser>0) {
+            contentAnswer.setCreattime(new Date());
+            snsContentAnswerMapper.insertSelective(contentAnswer);
+            map.put("code",0);
+        }else{
+            map.put("code", 1);
+            map.put("message", "你还未加入该部落");
+        }
+        return map;
+    }
+
+    public Map answerListById(Integer id,Integer uid,Integer page){
+        Map<String, Object> map = new HashMap<String, Object>();
+        PageBounds pageBounds = new PageBounds(page,pageSize);
+        Map<String, Object> pushmap = new HashMap<String, Object>();
+        pushmap.put("id",id);
+        pushmap.put("uid",uid);
+        ArrayList answerList = snsContentAnswerMapper.selectByCid(pushmap);
+        map.put("code",0);
+        map.put("list",answerList);
+        return map;
+    }
+
+    public Map isClanUser (Integer uid, Integer cid){
+        Map<String, Object> map = new HashMap<String, Object>();
+        snsClanUser clanUser = new snsClanUser();
+        clanUser.setCid(cid);
+        clanUser.setUid(uid);
+        Integer isclanUser = snsClanUserMapper.isClanUser(clanUser);
+        if(isclanUser>0) {
+            map.put("code",0);
+        }else{
+            map.put("code",1);
+        }
+        return map;
+    }
+
+    public Map clanSearch (String code){
+        Map<String, Object> map = new HashMap<String, Object>();
+        ArrayList clanList = snsClanMapper.clanSearch(code);
+        map.put("code",0);
+        map.put("list",clanList);
         return map;
     }
 }
